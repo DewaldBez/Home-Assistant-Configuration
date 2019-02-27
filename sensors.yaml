@@ -1,0 +1,107 @@
+#sensor:
+  - platform: yr
+  
+  - platform: plex
+    host: 192.168.0.7
+    token: !secret plex_token
+
+  - platform: scrape
+    resource: !secret scrape_url
+    select: ".links"
+
+  - platform: hue
+    ip_address: 192.168.0.113
+    token: !secret hue_api_token
+
+
+  - platform: time_date
+    display_options:
+      - 'time'
+      - 'date'
+      - 'date_time'
+      - 'time_date'
+      - 'time_utc'
+      - 'beat'
+
+  - platform: template
+    sensors:
+      front_door_sensor:
+        friendly_name: "Front Door"
+        value_template: >-
+          {% if is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor', 'off') %}
+            Closed
+          {% else %}
+            Open
+          {% endif %}
+
+  - platform: template
+    sensors:
+      back_door_sensor:
+        friendly_name: "Back Door"
+        value_template: >-
+          {% if is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor_2', 'off') %}
+            Closed
+          {% else %}
+            Open
+          {% endif %}           
+
+  - platform: template
+    sensors:
+      living_room_temp:
+        friendly_name: "Temperature"
+        unit_of_measurement: '°C'
+        value_template: >-
+          {{state_attr('sensor.living_motion_room', 'temperature') | round(1)}}
+          
+  - platform: template
+    sensors:
+      bedroom_temp:
+        friendly_name: "Temperature"
+        unit_of_measurement: 'degrees'
+        value_template: >-
+          {{state_attr('sensor.bedroom_motion_sensor', 'temperature') | round(1)}}
+
+  - platform: template
+    sensors:
+      office_temp:
+        friendly_name: "Temperature"
+        unit_of_measurement: 'degrees'
+        value_template: >-
+          {{state_attr('sensor.office_motion_sensor', 'temperature') | round(1)}}
+          
+  - platform: template
+    sensors:
+      washing_machine_pw:
+        friendly_name: "Washing Machine Power"
+        unit_of_measurement: 'W'
+        value_template: >-
+          {{state_attr('switch.washing_machine', 'current_power_w') | float}}
+
+  - platform: template
+    sensors:
+      next_trash_day:
+        friendly_name: "Next Trash Day"
+        value_template: >-
+          {% if states("sensor.web_scrape") | regex_search("Rubbish Recycle") %}
+            {{states("sensor.web_scrape") | regex_replace("Rubbish Recycle","")}}
+          {% else %}
+            {{states("sensor.web_scrape") | regex_replace("Rubbish","")}}
+          {% endif %}         
+
+  - platform: template
+    sensors:
+      next_trash_recycle:
+        friendly_name: "Recycle bin needed"
+        value_template: >-
+          {{states("sensor.web_scrape") | regex_search("Recycle")}}              
+
+  - platform: template
+    sensors:
+      plex_watching:
+        friendly_name: "Watching Plex"
+        value_template: >-
+          {% for attr in states.sensor.plex.attributes %}
+            {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" -%}
+              {{attr}} is watching {{states.sensor.plex.attributes[attr]}}
+            {%- endif %}
+          {%- endfor -%}  

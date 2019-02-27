@@ -1,0 +1,115 @@
+#group:
+  default_view:
+    view: yes
+    icon: mdi:sofa
+    entities:
+      - group.living_room
+      - device_tracker.dewald_p20pro
+      - device_tracker.chan_iphone
+  living_room:
+    name: Living Room
+    control: hidden
+    icon: mdi:sofa
+    entities:
+      - light.living_room_lights
+      - sensor.living_motion_room      
+      - sensor.living_room_temp
+      - switch.living_room_aircon
+      - media_player.living_room_tv
+      - media_player.living_room_speaker
+  kitchen:
+    name: Kitchen
+    view: yes
+    icon: mdi:kettle
+    entities:
+      - light.kitchen_lights
+      - media_player.kitchen_speaker
+  bedroom:    
+    name: Bedroom
+    icon: mdi:hotel
+    view: yes
+    entities:
+      - group.bedroom_group
+  bedroom_group:
+    name: Bedroom
+    control: hidden
+    entities:
+      - light.bedroom_bedside_lamp
+      - light.bedroom_standing_lamp
+      - sensor.bedroom_motion_sensor
+      - sensor.bedroom_temp
+      - media_player.bedroom_tv
+      - media_player.bedroom_speaker
+  office:
+    name: Office
+    icon: mdi:library
+    view: yes
+    entities:
+      - group.office_group
+  office_group:
+    name: Office
+    control: hidden
+    entities:
+      - light.Study
+      - light.office_desk
+      - sensor.office_motion_sensor
+      - sensor.office_temp
+      - media_player.office_speaker
+      - group.computers
+  computers:
+    name: Computers
+    control: hidden
+    entities:
+      - switch.dewald_pc
+      - switch.chan_pc
+  outside:
+    name: Outside
+    icon: mdi:gate
+    view: yes
+    entities:
+      - group.front
+      - group.back
+  front:
+    name: Front
+    control: hidden
+    entities:
+      - light.porch
+      - binary_sensor.ring_front_door_motion
+      - sensor.front_door_sensor
+      - camera.front_door
+  back:
+    name: Back
+    control: hidden
+    entities:
+      - light.stairs
+      - sensor.back_door_sensor
+  automationgroup:
+    name: Automations
+    icon: mdi:home-assistant
+    view: yes
+    entities:
+      - group.toggles
+      - weather.dark_sky
+      - group.tiles
+      - group.trash_day
+      - sensor.plex
+  toggles:
+    name: Toggles
+    entities:
+      - input_boolean.alarm_system
+      - input_boolean.alarm_motion_sensors
+      - input_boolean.morning_routine
+      - input_boolean.evening_lights
+      - input_boolean.living_room_motion_lights
+      - input_boolean.cinema_mode
+      - input_boolean.holiday_mode
+#  tiles:
+#    name: Tiles
+#    entities:
+#      - sensor.dewald_tile_sensor
+#      - sensor.chan_tile_sensor
+  trash_day:
+    name: Trash Day
+    entities:
+      - sensor.next_trash_day
+      - sensor.next_trash_recycle

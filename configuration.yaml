@@ -1,0 +1,209 @@
+homeassistant:
+  # Name of the location where Home Assistant is running
+  name: Home
+  # Location required to calculate the time the sun rises and sets
+  latitude: !secret latitude
+  longitude: !secret longitude
+  # Impacts weather/sunrise data (altitude above sea level in meters)
+  elevation: 37
+  # metric for Metric, imperial for Imperial
+  unit_system: metric
+  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+  time_zone: Pacific/Auckland
+  # Customization file
+  customize: !include customize.yaml
+
+# Enables the frontend
+frontend:
+
+# Enables configuration UI
+config:
+
+http:
+  api_password: !secret http_password
+  base_url: !secret base_url
+
+# Checks for available updates
+updater:
+
+#Enables the system health component
+system_health:
+
+# Discover some devices automatically
+discovery:
+
+# Allows you to issue voice commands from the frontend in enabled browsers
+conversation:
+
+# Enables support for tracking state changes over time
+history:
+
+# View all events in a logbook
+logbook:
+
+# Enables a map showing the location of tracked devices
+map:
+
+# Track the sun
+sun:
+
+#Enables the iOS component
+ios:
+
+climate:
+  - platform: broadlink
+    name: Living Room AC
+    host: 192.168.0.115
+    mac: !secret broadlink_mac
+    ircodes_ini: 'broadlink_climate_codes/mitsubishi_electric_custom.ini'
+    min_temp: 16
+    max_temp: 30
+    target_temp: 20
+    target_temp_step: 1
+    temp_sensor: sensor.living_room_temp
+    default_operation: 'off'
+    default_fan_mode: mid
+    customize:
+      operations:
+        - 'off'
+        - cool
+        - heat
+      fan_modes:
+        - low
+        - mid
+        - high
+        - auto
+
+alarm_control_panel:
+  - platform: manual
+    name: Home Alarm
+
+wemo:
+  discovery: false
+  static:
+    - 192.168.0.13
+
+duckdns:
+  domain: !secret domain
+  access_token: !secret domain_access_token
+
+weather:
+  - platform: darksky
+    api_key: !secret darksy_api_key
+
+binary_sensor:
+  - platform: ring
+
+# Text to speech
+tts:
+  - platform: google
+    #language: 'en-us' 
+    base_url: http://192.168.0.8:8123
+
+zwave:
+  usb_path: /dev/ttyACM0
+
+hue:
+
+device_tracker:
+  - platform: nmap_tracker
+    hosts: 192.168.0.1/24
+    home_interval: 15
+    consider_home: 180
+    new_device_defaults:
+      track_new_devices: True
+      hide_if_away: False
+    exclude:
+     - 192.168.0.6
+     - 192.168.0.7
+     - 192.168.0.8
+
+wake_on_lan:
+
+ring:
+  username: !secret ring_username
+  password: !secret ring_password
+
+camera:
+  - platform: ring
+
+  - platform: ffmpeg
+    input: -rtsp_transport tcp -i rtsp://192.168.0.9:6554/stream_0
+    name: Kitchen Cam
+
+joaoapps_join:
+  - name: android
+    device_id: group.android
+    api_key: !secret join_api_key
+
+google_assistant:
+  project_id: hass-3c1c4
+  expose_by_default:  false
+  entity_config:
+    light.living_room_lights:
+      name: Living Room Lights
+      room: living room
+      expose: true
+    light.office_desk:
+      name: Desk light
+      room: office
+      expose: true
+    light.bedroom_standing_lamp:
+      name: Standing lamp
+      room: bedroom
+      expose: true
+    light.stairs:
+      name: Stairs
+      room: stairs
+      expose: true   
+    light.bedroom_bedside_lamp:
+      name: Bedroom Bedside Lamp 
+      room: bedroom
+      expose: true
+    light.porch:
+      name: Porch 
+      room: porch
+      expose: true
+    light.kitchen_lights:
+      name: Kitchen Lights
+      room: kitchen
+      expose: true
+    light.Study:
+      name: Office Light
+      room: office
+      expose: true
+    climate.living_room_ac:
+      name: Air Conditioner
+      expose: true 
+      aliases:
+       - Aircon
+      room: living room    
+
+light:
+  - platform: group
+    name: Kitchen Lights
+    entities:
+      - light.kitchen_1
+      - light.kitchen_2   
+
+  - platform: group
+    name: Living Room Lights
+    entities:
+      - light.couch_lamp
+      - light.corner_lamp
+      - light.window_lamp
+
+vacuum:
+  - platform: xiaomi_miio
+    name: XiaomiRobot
+    host: 192.168.0.10
+    token: !secret xiaomi_vac_token
+
+automation: !include_dir_merge_list automations
+script: !include scripts.yaml
+switch: !include switches.yaml
+sensor: !include sensors.yaml
+notify: !include notify.yaml
+input_boolean: !include input_booleans.yaml
+zone: !include zones.yaml
+group: !include groups.yaml

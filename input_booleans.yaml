@@ -1,0 +1,45 @@
+#input_boolean:
+  alarm_system:
+    name: Alarm System
+    icon: mdi:security-home
+
+  living_room_motion_lights:
+    name: Living room motion lights
+    icon: mdi:run-fast
+
+  bedroom_motion_lights:
+    name: Bedroom motion lights
+    icon: mdi:run-fast
+
+  office_motion_lights:
+    name: Office motion lights
+    icon: mdi:run-fast
+    
+  alarm_motion_sensors:
+    name: Motion sensor alarm
+    icon: mdi:run-fast
+
+  fan_motion_sensors:
+    name: Fan motion sensor
+    icon: mdi:fan   
+
+  morning_routine:
+    name: Morning routine
+    icon: mdi:weather-sunset
+
+  evening_lights:
+    name: Turn on all lights at night
+    icon: mdi:lightbulb-on
+
+  cinema_mode:
+    name: Cinema mode
+    icon: mdi:movie
+
+  holiday_mode:
+    name: Holiday Mode
+    icon: mdi:caravan
+
+  house_occupancy:
+    name: Home Occupancy
+    icon: mdi:home-account
+
