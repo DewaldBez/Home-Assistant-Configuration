@@ -50,29 +50,14 @@ sun:
 #Enables the iOS component
 ios:
 
+smartir:
+
 climate:
-  - platform: broadlink
+  - platform: smartir
     name: Living Room AC
-    host: 192.168.0.115
-    mac: !secret broadlink_mac
-    ircodes_ini: 'broadlink_climate_codes/mitsubishi_electric_custom.ini'
-    min_temp: 16
-    max_temp: 30
-    target_temp: 20
-    target_temp_step: 1
-    temp_sensor: sensor.living_room_temp
-    default_operation: 'off'
-    default_fan_mode: mid
-    customize:
-      operations:
-        - 'off'
-        - cool
-        - heat
-      fan_modes:
-        - low
-        - mid
-        - high
-        - auto
+    device_code: 101
+    controller_send_service: switch.broadlink_send_packet_192_168_0_115
+    temperature_sensor: sensor.living_room_temp
 
 alarm_control_panel:
   - platform: manual
@@ -202,6 +187,7 @@ vacuum:
 automation: !include_dir_merge_list automations
 script: !include scripts.yaml
 switch: !include switches.yaml
+binary_sensor: !include binary_sensor.yaml
 sensor: !include sensors.yaml
 notify: !include notify.yaml
 input_boolean: !include input_booleans.yaml

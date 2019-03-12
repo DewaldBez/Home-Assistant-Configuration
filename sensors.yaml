@@ -9,11 +9,6 @@
     resource: !secret scrape_url
     select: ".links"
 
-  - platform: hue
-    ip_address: 192.168.0.113
-    token: !secret hue_api_token
-
-
   - platform: time_date
     display_options:
       - 'time'
@@ -43,7 +38,7 @@
             Closed
           {% else %}
             Open
-          {% endif %}           
+          {% endif %}
 
   - platform: template
     sensors:
@@ -51,7 +46,7 @@
         friendly_name: "Temperature"
         unit_of_measurement: '°C'
         value_template: >-
-          {{state_attr('sensor.living_motion_room', 'temperature') | round(1)}}
+          {{state_attr('binary_sensor.living_motion_room', 'temperature') | round(1)}}
           
   - platform: template
     sensors:
@@ -59,7 +54,7 @@
         friendly_name: "Temperature"
         unit_of_measurement: 'degrees'
         value_template: >-
-          {{state_attr('sensor.bedroom_motion_sensor', 'temperature') | round(1)}}
+          {{state_attr('binary_sensor.bedroom_motion_sensor', 'temperature') | round(1)}}
 
   - platform: template
     sensors:
@@ -67,7 +62,7 @@
         friendly_name: "Temperature"
         unit_of_measurement: 'degrees'
         value_template: >-
-          {{state_attr('sensor.office_motion_sensor', 'temperature') | round(1)}}
+          {{state_attr('binary_sensor.office_motion_sensor', 'temperature') | round(1)}}
           
   - platform: template
     sensors:
