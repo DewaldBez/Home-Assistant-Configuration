@@ -25,3 +25,12 @@ Here are some of the benefits that HA provides me:
 - [Google Chromecast](https://store.google.com/product/Chromecast)
 - [Google Home x 4](https://store.google.com/?srp=/product/google_home)
 - Toshiba 4K Android TV
+
+### Screenshots
+
+![](https://i.imgur.com/2Xxlxlv.png)
+![](https://i.imgur.com/oXjQTxZ.png)
+![](https://i.imgur.com/SBpJ4xl.png)
+![](https://i.imgur.com/rDjlg0E.png)
+![](https://i.imgur.com/bE1wQsA.png)
+![](https://i.imgur.com/Lj3CiNg.png)
