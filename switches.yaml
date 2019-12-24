@@ -1,14 +1,22 @@
 #switch:
   - platform: broadlink
     host: 192.168.0.115
-    mac: '34:EA:34:41:44:CE'
+    mac: !secret broadlinkmac1
+    switches:
+      living_room_fan:
+        friendly_name: "Living Room Fan"
+        command_on:
+          'JgDQAC0MLQwQKC0MLA0QKBAoLQwQKRAoECgQAAEPLQwsDRAoLA0sDQ8pECgtDBAoECkQKBAAAQ8sDSwMECksDSwMECkQKC0MECgQKRAoEAABDywMLQwQKSwMLQwQKBApLA0QKBAoECkQAAEOLQwtDBAoLQwsDRAoECksDBApECgQKQ8AAQ8tDCwNECgtDCwNDykQKC0MECkPKRAoEAABDywNLAwQKSwNLAwQKRAoLQwQKBApECgQAAEPLAwtDBApLAwtDBAoESgsDRAoECgQKRAADQUAAAAAAAAAAA=='
+        command_off:
+          'JgDQAC0MLQwQKC0MLA0QKBAoLQwQKRAoECgQAAEPLQwsDRAoLA0sDQ8pECgtDBAoECkQKBAAAQ8sDSwMECksDSwMECkQKC0MECgQKRAoEAABDywMLQwQKSwMLQwQKBApLA0QKBAoECkQAAEOLQwtDBAoLQwsDRAoECksDBApECgQKQ8AAQ8tDCwNECgtDCwNDykQKC0MECkPKRAoEAABDywNLAwQKSwNLAwQKRAoLQwQKBApECgQAAEPLAwtDBApLAwtDBAoESgsDRAoECgQKRAADQUAAAAAAAAAAA=='
 
-  - platform: wake_on_lan
-    mac_address: "08-62-66-4C-47-7D"
-    name: "Dewald PC"
-    host: 192.168.0.21
-
-  - platform: wake_on_lan
-    mac_address: "70:4D:7B:2E:08:E2"
-    name: "Chanri PC"
-    host: 192.168.0.158
+  - platform: broadlink
+    host: 192.168.0.23
+    mac: !secret broadlinkmac2
+    switches:
+      bedroom_tv_remote:
+        friendly_name: "Bedroom TV Remote"
+        command_on:
+          'JgBIAAABKZMSERISEhESNhISEhETERESEjYSNhI2EhISNhI2EjYSNhI3ETcSNhIREjYSEhI2EjYSERISEhESNhISEjYSERISEgANBQ=='
+        command_off:
+          'JgBIAAABKZMSERISEhESNhISEhETERESEjYSNhI2EhISNhI2EjYSNhI3ETcSNhIREjYSEhI2EjYSERISEhESNhISEjYSERISEgANBQ=='

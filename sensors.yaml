@@ -1,14 +1,8 @@
 #sensor:
   - platform: yr
+
+  - platform: huesensor
   
-  - platform: plex
-    host: 192.168.0.7
-    token: !secret plex_token
-
-  - platform: scrape
-    resource: !secret scrape_url
-    select: ".links"
-
   - platform: time_date
     display_options:
       - 'time'
@@ -38,12 +32,12 @@
             Closed
           {% else %}
             Open
-          {% endif %}
+          {% endif %}         
 
   - platform: template
     sensors:
       living_room_temp:
-        friendly_name: "Temperature"
+        friendly_name: "Living Room Temp"
         unit_of_measurement: '°C'
         value_template: >-
           {{state_attr('binary_sensor.living_motion_room', 'temperature') | round(1)}}
@@ -51,16 +45,16 @@
   - platform: template
     sensors:
       bedroom_temp:
-        friendly_name: "Temperature"
-        unit_of_measurement: 'degrees'
+        friendly_name: "Bedroom Temp"
+        unit_of_measurement: '°C'
         value_template: >-
           {{state_attr('binary_sensor.bedroom_motion_sensor', 'temperature') | round(1)}}
 
   - platform: template
     sensors:
       office_temp:
-        friendly_name: "Temperature"
-        unit_of_measurement: 'degrees'
+        friendly_name: "Office Temp"
+        unit_of_measurement: '°C'
         value_template: >-
           {{state_attr('binary_sensor.office_motion_sensor', 'temperature') | round(1)}}
           
@@ -74,29 +68,63 @@
 
   - platform: template
     sensors:
-      next_trash_day:
-        friendly_name: "Next Trash Day"
+      washing_machine_status:
+        friendly_name: "Washing Machine Status"
         value_template: >-
-          {% if states("sensor.web_scrape") | regex_search("Rubbish Recycle") %}
-            {{states("sensor.web_scrape") | regex_replace("Rubbish Recycle","")}}
+          {% if states('sensor.washing_machine_pw') > "1" %}
+            Washing
           {% else %}
-            {{states("sensor.web_scrape") | regex_replace("Rubbish","")}}
-          {% endif %}         
+            Idle
+          {% endif %}     
 
-  - platform: template
-    sensors:
-      next_trash_recycle:
-        friendly_name: "Recycle bin needed"
-        value_template: >-
-          {{states("sensor.web_scrape") | regex_search("Recycle")}}              
+  - platform: waze_travel_time
+    name: "PersonOne Work Commute"
+    origin: !secret PersonOneOrig
+    destination: !secret PersonOneDest
+    region: 'AU'
+  - platform: waze_travel_time
+    name: "PersonOne Home Commute"
+    origin: !secret PersonOneOrig
+    destination: !secret PersonOneDest
+    region: 'AU'
+  - platform: waze_travel_time
+    name: "PersonTwo Work Commute"
+    origin: !secret PersonTwoOrig
+    destination: !secret PersonTwoDest
+    region: 'AU'
+  - platform: waze_travel_time
+    name: "PersonTwo Home Commute"
+    origin: !secret PersonTwoOrig
+    destination: !secret PersonTwoDest
+    region: 'AU'
 
-  - platform: template
-    sensors:
-      plex_watching:
-        friendly_name: "Watching Plex"
-        value_template: >-
-          {% for attr in states.sensor.plex.attributes %}
-            {%- if not attr=="friendly_name" and not attr=="unit_of_measurement" -%}
-              {{attr}} is watching {{states.sensor.plex.attributes[attr]}}
-            {%- endif %}
-          {%- endfor -%}  
+  - platform: mitemp_bt
+    name: "Guest Bedroom"
+    mac: !secret guesttempmac
+    monitored_conditions:
+      - temperature
+      - humidity
+      - battery
+
+  - platform: rest
+    name: foyertablet
+    json_attributes:
+      - batteryLevel
+      - kioskMode
+      - screenBrightness
+      - motionDetectorState
+      - maintenanceMode
+      - appFreeMemory
+      - appUsedMemory
+      - totalFreeMemory
+      - totalUsedMemory
+      - hostname4
+      - ip4
+      - mac
+      - locationLatitude
+      - locationLongitude
+      - locationAltitude
+      - startUrl
+      - currentPage
+    resource: !secret fullykiosk
+    value_template: '{{ value_json.motionDetectorState }}'

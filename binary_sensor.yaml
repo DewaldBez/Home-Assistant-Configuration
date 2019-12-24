@@ -1,2 +1,10 @@
 #binary_sensor:
   - platform: huesensor
+  - platform: ring
+
+  - platform: workday
+    country: NZ
+    province: AUK
+  
+  - platform: car_wash
+    weather: weather.dark_sky
