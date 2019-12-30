@@ -31,11 +31,23 @@ Here are some of the benefits that HA provides me:
 
 
 ## Screenshots
+Main Screen
+![](https://i.imgur.com/cM6gjZW.png)
 
-![](https://i.imgur.com/fAVvzvR.png)
-![](https://i.imgur.com/TpnAs9f.png)
-![](https://i.imgur.com/yFoIl6q.png)
-![](https://i.imgur.com/ropK1t4.png)
-![](https://i.imgur.com/SuDK8QL.png)
-![](https://i.imgur.com/adplREz.png)
-![](https://i.imgur.com/HkjGgjJ.png)
+Living Room
+![](https://i.imgur.com/Bd4GSii.png)
+
+Kitchen
+![](https://i.imgur.com/FUIX2LW.png)
+
+Bedroom
+![](https://i.imgur.com/jrMO4rz.png)
+
+Office
+![](https://i.imgur.com/z8dwC5O.png)
+
+Fully Kiosk Tablet
+![](https://i.imgur.com/6YKCU8z.png)
+
+Misc Settings and Entities
+![](https://i.imgur.com/VpPjxug.png)
