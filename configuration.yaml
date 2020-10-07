@@ -1,74 +1,43 @@
 homeassistant:
-  # Name of the location where Home Assistant is running
-  name: Home
-  # Location required to calculate the time the sun rises and sets
-  latitude: !secret latitude
-  longitude: !secret longitude
-  # Impacts weather/sunrise data (altitude above sea level in meters)
-  elevation: 35
-  # metric for Metric, imperial for Imperial
-  unit_system: metric
-  # Pick yours from here: http://en.wikipedia.org/wiki/List_of_tz_database_time_zones
-  time_zone: Pacific/Auckland
-  # Customization file
   customize: !include customize.yaml
+  whitelist_external_dirs:
+    - "/tmp"
 
-# Enables the frontend
 frontend:
   themes: !include_dir_merge_named themes
 
-# Enables configuration UI
 config:
+updater:
+system_health:
+stream:
+history:
+logbook:
+map:
+sun:
+websocket_api:
+mobile_app:
+wake_on_lan:
 
 recorder:
   purge_keep_days: 5
-  purge_interval: 1
 
 http:
-  #api_password: !secret http_password
-  base_url: !secret base_url
   use_x_forwarded_for: true
   trusted_proxies: 172.17.0.4
   cors_allowed_origins:
-  - https://cast.home-assistant.io
-  #trusted_networks: 192.168.0.1/24
-
-# Checks for available updates
-updater:
-
-#Enables the system health component
-system_health:
-
-# Discover some devices automatically
-discovery:
-  ignore:
-    - homekit
-
-# Allows you to issue voice commands from the frontend in enabled browsers
-conversation:
-
-stream:
-
-# Enables support for tracking state changes over time
-history:
-
-# View all events in a logbook
-logbook:
-
-# Enables a map showing the location of tracked devices
-map:
-
-# Track the sun
-sun:
-
-websocket_api:
+    - https://cast.home-assistant.io
 
 hacs:
   token: !secret hacs_token
 
+spotcast:
+  sp_dc: !secret sp_dc
+  sp_key: !secret sp_key
+
 alarm_control_panel:
   - platform: manual
     name: Home Alarm
+    delay_time: 60
 
 yeelight:
   devices:
@@ -82,38 +51,60 @@ yeelight:
       name: Kitchen Lightstrip
     192.168.0.189:
       name: Corner Lamp
+    192.168.0.232:
+      name: Nursery Cupboard Lamp
+    192.168.0.218:
+      name: Nursery Standing Lamp
 
-duckdns:
-  domain: !secret domain
-  access_token: !secret domain_access_token
+media_extractor:
+  default_query: bestaudio[ext=m4a]
+
+climate:
+  - platform: generic_thermostat
+    name: "Bedroom Thermostat"
+    heater: switch.bedroom_heater
+    target_sensor: sensor.bedroom_sensor_temperature
+    target_temp: 18.0
+    min_temp: 15
+    max_temp: 23
+
+  - platform: generic_thermostat
+    name: "Nursery Thermostat"
+    heater: switch.washing_machine
+    target_sensor: sensor.nursery_temp
+    target_temp: 18.0
+    min_temp: 15
+    max_temp: 23
+
+  - platform: generic_thermostat
+    name: "Living Room Thermostat"
+    heater: switch.living_room_heater
+    target_sensor: sensor.living_room_temp
+    target_temp: 18.0
+    min_temp: 15
+    max_temp: 23
 
 weather:
   - platform: darksky
     api_key: !secret darksy_api_key
 
-person:
-  - name: personone
-    id: personone101
-    device_trackers:
-      - device_tracker.personone_lan
-      - device_tracker.personone_gps
-  - name: persontwo
-    id: persontwo101
-    device_trackers:
-      - device_tracker.persontwo_lan
-      - device_tracker.persontwo_gps
-
-# Text to speech
 tts:
   - platform: google_translate
     service_name: google_say
-    language: 'en-us'
+    language: "en-us"
     base_url: http://192.168.0.87:8123
 
 zwave:
   usb_path: /dev/ttyACM0
 
-hue:
+mqtt:
+  broker: 192.168.0.87
+  discovery: true
+  discovery_prefix: homeassistant
+
+spotify:
+  client_id: !secret spotify_client_id
+  client_secret: !secret spotify_secret
 
 device_tracker:
   - platform: nmap_tracker
@@ -122,24 +113,22 @@ device_tracker:
     consider_home: 180
     new_device_defaults:
       track_new_devices: True
-      hide_if_away: False
     exclude:
-     - 192.168.0.6
-     - 192.168.0.7
-     - 192.168.0.8
-
-wake_on_lan:
-
-ring:
-  username: !secret ring_username
-  password: !secret ring_password
+      - 192.168.0.6
+      - 192.168.0.7
+      - 192.168.0.8
+      - 192.168.0.87
 
 camera:
-  - platform: ring
-
   - platform: ffmpeg
     input: -rtsp_transport tcp -i rtsp://192.168.0.9:6554/stream_0
-    name: Foyer
+    name: Nursery
+
+  - platform: generic
+    name: Vacuum Map
+    still_image_url: http://192.168.0.7:3030/api/map/image
+    content_type: image/png
+    framerate: 1
 
 joaoapps_join:
   - name: android
@@ -147,8 +136,7 @@ joaoapps_join:
     api_key: !secret join_api_key
 
 google_assistant:
-  project_id: homeassistant-c21w9
-  #report_state: true
+  project_id: !secret gprojectid
   expose_by_default: false
   entity_config:
     light.living_room_lights:
@@ -163,9 +151,9 @@ google_assistant:
       name: Corner Lamp
       room: bedroom
       expose: true
-    light.bedroom_lightstrip:
-      name: Bed Lightstrip
-      room: bedroom
+    light.kitchen_lightstrip:
+      name: Kitchen Lightstrip
+      room: kitchen
       expose: true
     light.bedside_lamp:
       name: Bedroom Bedside Lamp
@@ -183,29 +171,34 @@ google_assistant:
       name: Office Light
       room: office
       expose: true
-    sensor.living_room_temperature:
-      name: Living Room Temperature
+    light.nursery_standing_lamp:
+      name: Nursery Standing Lamp
+      room: nursery
       expose: true
-      room: living room
-    sensor.bedroom_sensor_temperature:
-      name: Bedroom Temperature
-      expose: true
+    climate.bedroom_thermostat:
+      name: Bedroom Thermostat
       room: bedroom
-    sensor.office_sensor_temperature:
-      name: Office Temperature
       expose: true
-      room: office
-    vacuum.xiaomirobot:
+    climate.living_room_thermostat:
+      name: Living Room Thermostat
+      room: bedroom
+      expose: true
+    climate.nursery_thermostat:
+      name: Nursery Thermostat
+      room: nursery
+      expose: true
+    vacuum.rockrobo:
       name: Vacuum
       expose: true
       room: living room
-    media_player.living_room_tv_remote:
-      name: Living Room TV
+    camera.nursery:
+      name: Nursery
       expose: true
-      room: living room
-    camera.foyer:
-      name: Foyer
-      room: foyer
+      room: bedroom
+    input_boolean.baby_sleep:
+      name: White Noise
+      expose: true
+      room: bedroom
 
 light:
   - platform: group
@@ -220,11 +213,17 @@ light:
       - light.bedside_lamp
       - light.corner_lamp
 
-vacuum:
-  - platform: xiaomi_miio
-    name: XiaomiRobot
-    host: 192.168.0.10
-    token: !secret xiaomi_vac_token
+  - platform: group
+    name: Kitchen Lights
+    entities:
+      - light.kitchen_counter
+      - light.kitchen_lightstrip
+
+  - platform: group
+    name: Nursery Lights
+    entities:
+      - light.nursery_cupboard_lamp
+      - light.nursery_standing_lamp
 
 media_player:
   - platform: smartir

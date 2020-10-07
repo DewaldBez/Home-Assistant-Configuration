@@ -11,6 +11,10 @@
     name: Bedroom motion lights
     icon: mdi:run-fast
 
+  nursery_motion_lights:
+    name: Nursery motion lights
+    icon: mdi:run-fast
+
   office_motion_lights:
     name: Office motion lights
     icon: mdi:run-fast
@@ -42,3 +46,11 @@
   autovacuum:
     name: Auto Vacuum
     icon: mdi:robot-vacuum
+
+  baby_sleep:
+    name: Baby Sleepy Time
+    icon: mdi:sleep
+
+  nursery_nightlight:
+    name: Nursery Night Light
+    icon: mdi:baby-carriage

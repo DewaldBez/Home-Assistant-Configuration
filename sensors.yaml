@@ -1,8 +1,4 @@
 #sensor:
-  - platform: yr
-
-  - platform: huesensor
-  
   - platform: time_date
     display_options:
       - 'time'
@@ -32,7 +28,26 @@
             Closed
           {% else %}
             Open
-          {% endif %}         
+          {% endif %}
+
+  - platform: template
+    sensors:
+      house_doors_sensor:
+        friendly_name: "House Doors"
+        value_template: >-
+          {% if is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor', 'off') and
+                is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor_2', 'off')%}
+            All doors are closed
+          {% elif is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor', 'on') and
+                is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor_2', 'off')%}
+            The front door is open
+          {% elif is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor', 'off') and
+                is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor_2', 'on')%}
+            The back door is open
+          {% elif is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor', 'on') and
+                is_state('binary_sensor.neo_coolcam_unknown_type_0003_id_6082_sensor_2', 'on')%}
+            All doors are open
+          {% endif %}
 
   - platform: template
     sensors:
@@ -41,7 +56,7 @@
         unit_of_measurement: '°C'
         value_template: >-
           {{state_attr('binary_sensor.living_motion_room', 'temperature') | round(1)}}
-          
+
   - platform: template
     sensors:
       bedroom_temp:
@@ -57,7 +72,15 @@
         unit_of_measurement: '°C'
         value_template: >-
           {{state_attr('binary_sensor.office_motion_sensor', 'temperature') | round(1)}}
-          
+
+  - platform: template
+    sensors:
+      nursery_temp:
+        friendly_name: "Nursery Temp"
+        unit_of_measurement: '°C'
+        value_template: >-
+          {{state_attr('binary_sensor.nursery_motion_sensor', 'temperature') | round(1)}}
+
   - platform: template
     sensors:
       washing_machine_pw:
@@ -75,39 +98,99 @@
             Washing
           {% else %}
             Idle
-          {% endif %}     
+          {% endif %}
 
-  - platform: waze_travel_time
-    name: "PersonOne Work Commute"
-    origin: !secret PersonOneOrig
-    destination: !secret PersonOneDest
-    region: 'AU'
-  - platform: waze_travel_time
-    name: "PersonOne Home Commute"
-    origin: !secret PersonOneOrig
-    destination: !secret PersonOneDest
-    region: 'AU'
-  - platform: waze_travel_time
-    name: "PersonTwo Work Commute"
-    origin: !secret PersonTwoOrig
-    destination: !secret PersonTwoDest
-    region: 'AU'
-  - platform: waze_travel_time
-    name: "PersonTwo Home Commute"
-    origin: !secret PersonTwoOrig
-    destination: !secret PersonTwoDest
-    region: 'AU'
+  - platform: template
+    sensors:
+      person2_location:
+        friendly_name: "person2's Location"
+        value_template: >-
+          {% if states('person.person2') == "hA" %}
+            At Work
+          {% elif states('person.person2') == "Home" %}
+            At Home
+          {% endif %}
 
-  - platform: mitemp_bt
-    name: "Guest Bedroom"
-    mac: !secret guesttempmac
-    monitored_conditions:
-      - temperature
-      - humidity
-      - battery
+  - platform: template
+    sensors:
+      person2_battery:
+        friendly_name: "person2's Battery Level"
+        unit_of_measurement: '%'
+        value_template: >-
+          {{state_attr('device_tracker.person2_oneplus7pro','battery_level') | round}}
+
+  - platform: template
+    sensors:
+      person1_location:
+        friendly_name: "person1's Location"
+        value_template: >-
+          {% if states('person.person1') == "Site Safe" %}
+            At Work
+          {% elif states('person.person1') == "Home" %}
+            At Home
+          {% endif %}
+
+  - platform: template
+    sensors:
+      person1_battery:
+        friendly_name: "person1's Battery Level"
+        unit_of_measurement: '%'
+        value_template: >-
+          {{state_attr('device_tracker.person1_mate_20_gps','battery_level') | round}}
+
+  - platform: template
+    sensors:
+      lights_on:
+        friendly_name: "Lights On"
+        value_template: >-
+          {{ states | selectattr('entity_id','in', ['light.living_room','light.dining_table','light.kitchen_counter','light.kitchen_lightstrip','light.bedside_lamp','light.office','light.corner_lamp','switch.lava_lamp','light.nursery_standing_lamp'] )|selectattr('state','eq','on') | list | count }}
+
+  - platform: template
+    sensors:
+      person1_working:
+        friendly_name: "person1's Work Status"
+        value_template: >-
+          {% if is_state('sensor.desktop_lpn6bhq_system_idle_time','unavailable') %}
+            offline
+          {% elif states('sensor.desktop_lpn6bhq_system_idle_time')|float > 300 %}
+            standby
+          {% elif states('sensor.desktop_lpn6bhq_system_idle_time')|float < 300 %}
+            active
+          {% endif %}
+
+  - platform: template
+    sensors:
+      person2_working:
+        friendly_name: "person2's Work Status"
+        value_template: >-
+          {% if is_state('sensor.desktop_55q07lk_system_idle_time','unavailable') %}
+            offline
+          {% elif states('sensor.desktop_55q07lk_system_idle_time')|float > 300 %}
+            standby
+          {% elif states('sensor.desktop_55q07lk_system_idle_time')|float < 300 %}
+            active
+          {% endif %}
+
+  - platform: history_stats
+    name: person2 Work Hours
+    entity_id: sensor.person2_working
+    state: 'active'
+    type: time
+    start: '{{ now().replace(hour=7, minute=0, second=0) }}'
+    duration:
+      hours: 10
+
+  - platform: history_stats
+    name: person1 Work Hours
+    entity_id: sensor.person1_working
+    state: 'active'
+    type: time
+    start: '{{ now().replace(hour=7, minute=0, second=0) }}'
+    duration:
+      hours: 10
 
   - platform: rest
-    name: foyertablet
+    name: galaxytabten
     json_attributes:
       - batteryLevel
       - kioskMode
@@ -126,5 +209,37 @@
       - locationAltitude
       - startUrl
       - currentPage
-    resource: !secret fullykiosk
+    resource: !secret fullykiosktabten
     value_template: '{{ value_json.motionDetectorState }}'
+
+  - platform: rest
+    name: galaxytaba
+    json_attributes:
+      - batteryLevel
+      - kioskMode
+      - screenBrightness
+      - motionDetectorState
+      - maintenanceMode
+      - appFreeMemory
+      - appUsedMemory
+      - totalFreeMemory
+      - totalUsedMemory
+      - hostname4
+      - ip4
+      - mac
+      - locationLatitude
+      - locationLongitude
+      - locationAltitude
+      - startUrl
+      - currentPage
+    resource: !secret fullykiosktaba
+    value_template: '{{ value_json.motionDetectorState }}'
+
+  - platform: xbox_live
+    api_key: !secret xbox_api
+    xuid:
+      - !secret xbox_xuid
+
+  - platform: seventeentrack
+    username: !secret seventeentrackemail
+    password: !secret seventeentrackpass

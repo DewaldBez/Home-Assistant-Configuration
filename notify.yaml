@@ -1,13 +1,13 @@
   - platform: joaoapps_join
     api_key: !secret join_api_key
     device_id: !secret join_device_id
-    device_ids: !secret join_device_id
+    name: 'person2_notify'
 
-  - name: pushover_notify
+  - name: person1_notify
     platform: pushover
     api_key: !secret pushover_api_key
     user_key: !secret pushover_user_key
-    
+
   - platform: nfandroidtv
     name: Living Room TV
     host: 192.168.0.103

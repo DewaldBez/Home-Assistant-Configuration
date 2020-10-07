@@ -1,0 +1,6 @@
+# #group:
+  household:
+    name: Household
+    entities:
+      - person.person1
+      - person.person2
